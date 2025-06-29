@@ -89,7 +89,7 @@
 
 <footer class="bg-light text-secondary py-4 mt-5 border-top">
     <div class="container text-center">
-        <p class="mb-0">&copy; 2024 Webinar Event Sri. All rights reserved.</p>
+        <p class="mb-0">&copy; 2025 Webinar Event Sri. All rights reserved.</p>
     </div>
 </footer>
 
