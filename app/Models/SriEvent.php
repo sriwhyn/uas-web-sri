@@ -14,9 +14,7 @@ class SriEvent extends Model
     protected $fillable = [
         'judul', // Diubah dari 'nama_event'
         'deskripsi',
-        'tanggal_pelaksanaan', // Tetap 'tanggal_pelaksanaan' di DB, tapi controller pakai 'tanggal'
-        'waktu_mulai',
-        'waktu_selesai',
+        'tanggal_pelaksanaan', 
         'lokasi',
         'kuota',
         'gambar',
