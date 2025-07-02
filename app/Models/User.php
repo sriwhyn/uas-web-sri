@@ -60,6 +60,7 @@ class User extends Authenticatable
         // 'sri_pendaftaran' adalah nama tabel pivot
         // 'user_id' adalah foreign key di tabel pivot yang merujuk ke model User
         // 'sri_event_id' adalah foreign key di tabel pivot yang merujuk ke model SriEvent
+        
         return $this->belongsToMany(SriEvent::class, 'sri_pendaftaran', 'user_id', 'sri_event_id')
                     ->withPivot('status_pendaftaran', 'created_at') // Memuat kolom pivot yang relevan
                     ->withTimestamps(); // Jika tabel pivot memiliki created_at dan updated_at

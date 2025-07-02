@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;                         // ➜ Tambahkan agar IDE kenal kelas User
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class AuthController extends Controller
 {
     /**
-     * Form login.
+     * Tampilkan form login.
      */
     public function loginForm()
     {
@@ -23,14 +25,11 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        // Attempt login
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            /** @var User|null $loggedUser */
-            $loggedUser = Auth::user();      // IDE tahu $loggedUser bertipe User|null
+            $loggedUser = Auth::user();
 
-            // Redirect berdasarkan role
             if ($loggedUser?->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
@@ -38,7 +37,6 @@ class AuthController extends Controller
             return redirect()->route('home');
         }
 
-        // Jika gagal
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ])->onlyInput('email');
@@ -55,5 +53,41 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    /**
+     * Tampilkan form registrasi.
+     */
+    public function registerForm()
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * Proses registrasi user baru.
+     */
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => 'mahasiswa', // default role
+        ]);
+
+        Auth::login($user); // login otomatis setelah register
+        $request->session()->regenerate();
+
+        return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan login.');
     }
 }

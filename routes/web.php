@@ -2,24 +2,24 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
-use App\Http\Controllers\AuthController; // Import AuthController
-use App\Http\Controllers\Admin\DashboardController; // Import DashboardController
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\KategoriController;
 use App\Http\Controllers\Admin\EventController;
-use App\Http\Controllers\Admin\PengumumanController; // Import PengumumanController
-use App\Http\Controllers\Admin\PendaftaranController; // Import PendaftaranController
+use App\Http\Controllers\Admin\PengumumanController;
+use App\Http\Controllers\Admin\PendaftaranController;
 use App\Http\Middleware\RoleAdmin;
 
 /*
 |--------------------------------------------------------------------------
-| ROOT "/" - Redirect ke halaman sesuai role
+| ROOT "/" - Redirect Otomatis Berdasarkan Role
 |--------------------------------------------------------------------------
 */
 Route::get('/', [FrontController::class, 'rootRedirect'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
-| FRONTEND / PUBLIK
+| FRONTEND (PUBLIK)
 |--------------------------------------------------------------------------
 */
 Route::get('/beranda', [FrontController::class, 'index'])->name('beranda');
@@ -28,19 +28,23 @@ Route::post('/daftar', [FrontController::class, 'daftar'])->middleware('auth')->
 
 /*
 |--------------------------------------------------------------------------
-| AUTENTIKASI MANUAL (Tanpa Breeze/Jetstream)
+
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+    Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 });
+
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN ROUTES (Prefix 'admin', Middleware 'auth' & 'admin')
+| ADMIN PANEL (Hanya Bisa Diakses Admin)
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->middleware(['auth', RoleAdmin::class])->group(function () {
@@ -56,6 +60,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', RoleAdmin::class])->
     // CRUD Pengumuman
     Route::resource('pengumuman', PengumumanController::class);
 
-    // Pendaftaran (menambahkan 'update' ke daftar yang diizinkan)
-    Route::resource('pendaftaran', PendaftaranController::class)->only(['index', 'show', 'update', 'destroy']);
+    // Manajemen Pendaftaran
+    Route::resource('pendaftaran', PendaftaranController::class)->only([
+        'index', 'show', 'update', 'destroy'
+    ]);
 });
