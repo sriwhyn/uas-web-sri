@@ -52,7 +52,7 @@
                             <!-- Lokasi -->
                             <div class="col-md-6">
                                 <label for="lokasi" class="form-label">Lokasi Event</label>
-                                <input id="lokasi" name="lokasi" type="text" class="form-control @error('lokasi') is-invalid @enderror" value="{{ old('lokasi') }}" required placeholder="Contoh: Aula Kampus">
+                                <input id="lokasi" name="lokasi" type="text" class="form-control @error('lokasi') is-invalid @enderror" value="{{ old('lokasi') }}" >
                                 @error('lokasi')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
