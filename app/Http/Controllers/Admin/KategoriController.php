@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\SriKategori; // Pastikan model SriKategori diimpor
+use App\Models\SriKategori;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator; // Import Validator facade
+use Illuminate\Support\Facades\Validator;
 
 class KategoriController extends Controller
 {
@@ -19,18 +19,7 @@ class KategoriController extends Controller
     }
 
     /**
-     * Tampilkan form untuk membuat kategori baru.
-     * Metode ini tidak lagi digunakan sebagai halaman terpisah,
-     * karena form sekarang ada di dalam modal pada halaman index.
-     */
-    // public function create()
-    // {
-    //     return view('admin.kategori.create');
-    // }
-
-    /**
-     * Simpan kategori baru ke database.
-     * Menangani permintaan AJAX dan non-AJAX.
+     * Simpan kategori baru.
      */
     public function store(Request $request)
     {
@@ -49,15 +38,20 @@ class KategoriController extends Controller
             'nama_kategori' => $request->nama_kategori,
         ]);
 
+        // Set zona waktu Asia/Jakarta untuk respons AJAX
         if ($request->ajax()) {
-            return response()->json(['success' => 'Kategori berhasil ditambahkan!', 'kategori' => $kategori]);
+            $kategori->created_at = $kategori->created_at->timezone('Asia/Jakarta')->toDateTimeString();
+            return response()->json([
+                'success' => 'Kategori berhasil ditambahkan!',
+                'kategori' => $kategori
+            ]);
         }
 
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil ditambahkan!');
     }
 
     /**
-     * Tampilkan form untuk mengedit kategori.
+     * Tampilkan form edit.
      */
     public function edit(SriKategori $kategori)
     {
@@ -65,7 +59,7 @@ class KategoriController extends Controller
     }
 
     /**
-     * Perbarui kategori di database.
+     * Perbarui kategori.
      */
     public function update(Request $request, SriKategori $kategori)
     {
@@ -85,21 +79,23 @@ class KategoriController extends Controller
         ]);
 
         if ($request->ajax()) {
-            return response()->json(['success' => 'Kategori berhasil diperbarui!', 'kategori' => $kategori]);
+            return response()->json([
+                'success' => 'Kategori berhasil diperbarui!',
+                'kategori' => $kategori
+            ]);
         }
 
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diperbarui!');
     }
 
     /**
-     * Hapus kategori dari database.
-     * Menangani permintaan AJAX dan non-AJAX.
+     * Hapus kategori.
      */
     public function destroy(SriKategori $kategori)
     {
         $kategori->delete();
 
-        if (request()->ajax()) { // Menggunakan request() helper untuk memeriksa AJAX
+        if (request()->ajax()) {
             return response()->json(['success' => 'Kategori berhasil dihapus!']);
         }
 

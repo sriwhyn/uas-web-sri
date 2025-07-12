@@ -15,28 +15,31 @@
         </select>
     </form>
 
-    <div class="row">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @forelse ($events as $event)
-            {{-- Tampilkan event card --}}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    @if($event->gambar)
-                        <img src="{{ asset('storage/' . $event->gambar) }}" class="card-img-top" alt="...">
-                    @endif
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $event->judul }}</h5>
-                        <p class="card-text text-muted">{{ $event->tanggal->format('d M Y') }}</p>
-                        <a href="{{ route('event.detail', $event->id) }}" class="btn btn-sm btn-primary">Detail</a>
-                    </div>
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                @if($event->gambar)
+                    <img src="{{ asset('storage/' . $event->gambar) }}" class="card-img-top" alt="{{ $event->judul }}">
+                @endif
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-primary">{{ $event->judul }}</h5>
+                    <p class="card-text text-muted mb-2">
+                        <i class="bi bi-calendar"></i> {{ $event->tanggal->format('d M Y') }}
+                    </p>
+                    <a href="{{ route('event.detail', $event->id) }}" class="btn btn-outline-primary mt-auto btn-sm rounded-pill">
+                        Detail <i class="bi bi-arrow-right"></i>
+                    </a>
                 </div>
             </div>
+        </div>
         @empty
-            <p class="text-center">Belum ada event tersedia.</p>
+        <p class="text-center">Belum ada event tersedia.</p>
         @endforelse
     </div>
 
     <div class="d-flex justify-content-center mt-4">
-        {{ $events->withQueryString()->links() }}
+        {{ $events->withQueryString()->links('pagination::bootstrap-5') }}
     </div>
 </div>
 @endsection

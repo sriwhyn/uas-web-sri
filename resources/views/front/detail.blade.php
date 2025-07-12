@@ -1,14 +1,15 @@
 @extends('layouts.front')
 
 @section('content')
-<div class="container mt-5">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="card shadow">
+            <div class="card shadow border-0">
                 <div class="card-body p-5">
 
+                    {{-- Judul --}}
                     <div class="text-center mb-5">
-                        <h2 class="display-5 fw-bold text-primary">{{ $event->judul }}</h2>
+                        <h2 class="fw-bold text-primary">{{ $event->judul }}</h2>
                         <p class="text-muted">Detail Informasi Event Kampus</p>
                     </div>
 
@@ -21,7 +22,7 @@
                     @endif
                     @if (session('error'))
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Error!</strong> {{ session('error') }}
+                            <strong>Oops!</strong> {{ session('error') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     @endif
@@ -33,59 +34,71 @@
                         </div>
                     @endif
 
-                    {{-- Info Event --}}
-                    <div class="row text-center mb-4">
-                        <div class="col-md-3 mb-3">
-                            <p class="mb-1 text-muted"><i class="bi bi-tag me-1 text-primary"></i> Kategori</p>
-                            <h6>{{ $event->kategori->nama_kategori }}</h6>
+                    {{-- Info Utama --}}
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3 text-center text-muted small mb-4">
+                        <div>
+                            <div class="d-flex flex-column align-items-center">
+                                <i class="bi bi-tag text-primary fs-5 mb-1"></i>
+                                <span>Kategori</span>
+                                <strong class="text-dark">{{ $event->kategori->nama_kategori }}</strong>
+                            </div>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <p class="mb-1 text-muted"><i class="bi bi-calendar me-1 text-primary"></i> Tanggal</p>
-                            <h6>{{ $event->tanggal->format('d M Y') }}</h6>
+                        <div>
+                            <div class="d-flex flex-column align-items-center">
+                                <i class="bi bi-calendar text-primary fs-5 mb-1"></i>
+                                <span>Tanggal</span>
+                                <strong class="text-dark">{{ $event->tanggal->format('d M Y') }}</strong>
+                            </div>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <p class="mb-1 text-muted"><i class="bi bi-geo-alt me-1 text-primary"></i> Lokasi</p>
-                            <h6>{{ $event->lokasi }}</h6>
+                        <div>
+                            <div class="d-flex flex-column align-items-center">
+                                <i class="bi bi-geo-alt text-primary fs-5 mb-1"></i>
+                                <span>Lokasi</span>
+                                <strong class="text-dark">{{ $event->lokasi }}</strong>
+                            </div>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <p class="mb-1 text-muted"><i class="bi bi-people-fill me-1 text-primary"></i> Kuota</p>
-                            <h6>
-                                @if(!is_null($event->sisa_kuota))
-                                    {{ $event->sisa_kuota }} dari {{ $event->kuota }} tersisa
-                                @else
-                                    Tidak dibatasi
-                                @endif
-                            </h6>
+                        <div>
+                            <div class="d-flex flex-column align-items-center">
+                                <i class="bi bi-people text-primary fs-5 mb-1"></i>
+                                <span>Kuota</span>
+                                <strong class="text-dark">
+                                    @if(!is_null($event->sisa_kuota))
+                                        {{ $event->sisa_kuota }} dari {{ $event->kuota }}
+                                    @else
+                                        Tidak dibatasi
+                                    @endif
+                                </strong>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <p class="mb-1 text-muted"><i class="bi bi-briefcase-fill me-1 text-primary"></i> Penyelenggara</p>
-                        <h6>{{ $event->penyelenggara ?? 'Tidak diketahui' }}</h6>
+                    {{-- Penyelenggara --}}
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-briefcase-fill text-primary me-2"></i>
+                            <strong class="me-2">Penyelenggara:</strong>
+                            <span>{{ $event->penyelenggara ?? 'Tidak diketahui' }}</span>
+                        </div>
                     </div>
 
                     {{-- Deskripsi --}}
                     <div class="mb-5">
-                        <h5 class="text-primary"><i class="bi bi-file-earmark-text me-1"></i>Deskripsi:</h5>
-                        <div class="bg-light p-4 rounded">
+                        <h5 class="text-primary mb-2"><i class="bi bi-file-earmark-text me-2"></i> Deskripsi</h5>
+                        <div class="bg-light p-4 rounded shadow-sm">
                             {!! nl2br(e($event->deskripsi)) !!}
                         </div>
                     </div>
 
                     {{-- Tombol Daftar --}}
-                    <div class="pt-4 border-top">
+                    <div class="text-center border-top pt-4">
                         @auth
-                        <div class="text-center">
                             <a href="{{ route('event.form.daftar', $event->id) }}" class="btn btn-primary btn-lg px-5">
                                 <i class="bi bi-pencil-square me-2"></i> Daftar Sekarang
                             </a>
-                        </div>
                         @else
-                        <div class="text-center">
                             <a href="{{ route('login') }}" class="btn btn-warning btn-lg px-4">
-                                <i class="bi bi-box-arrow-in-right me-2"></i>Login untuk Mendaftar
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login untuk Mendaftar
                             </a>
-                        </div>
                         @endauth
                     </div>
 

@@ -40,7 +40,7 @@
                         <tr id="kategori-row-{{ $kategori->id }}">
                             <td>{{ $kategori->id }}</td>
                             <td>{{ $kategori->nama_kategori }}</td>
-                            <td>{{ $kategori->created_at->format('d M Y H:i') }}</td>
+                            <td>{{ $kategori->created_at->timezone('Asia/Jakarta')->format('d M Y H:i') }}</td>
                             <td class="text-center">
                                 <a href="{{ route('admin.kategori.edit', $kategori->id) }}" class="btn btn-warning btn-sm me-1">
                                     <i class="bi bi-pencil"></i>
