@@ -3,35 +3,39 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\SriEvent;
-use App\Models\SriKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\SriEvent;
+use App\Models\SriKategori;
 
 class EventController extends Controller
 {
+    // Tampilkan daftar event
     public function index()
     {
         $events = SriEvent::with('kategori')->latest()->get();
         return view('admin.event.index', compact('events'));
     }
 
+    // Form tambah event
     public function create()
     {
         $kategori = SriKategori::all();
         return view('admin.event.create', compact('kategori'));
     }
 
+    // Simpan event baru
     public function store(Request $request)
     {
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required',
             'tanggal' => 'required|date',
-            'lokasi' => 'required|string',
+            'lokasi' => 'required|string|max:255',
             'kategori_id' => 'required|exists:sri_kategori,id',
+            'kuota' => 'nullable|integer|min:1',
+            'penyelenggara' => 'required|string|max:255',
             'gambar' => 'nullable|image|max:2048',
-            'kuota' => 'nullable|integer|min:1', // Tambahkan validasi kuota
         ]);
 
         $gambar = null;
@@ -45,19 +49,15 @@ class EventController extends Controller
             'tanggal_pelaksanaan' => $request->tanggal,
             'lokasi' => $request->lokasi,
             'kategori_id' => $request->kategori_id,
-            'gambar' => $gambar,
             'kuota' => $request->kuota,
+            'penyelenggara' => $request->penyelenggara,
+            'gambar' => $gambar,
         ]);
 
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan.');
     }
 
-    public function show($id)
-    {
-        $event = SriEvent::with('kategori')->findOrFail($id);
-        return view('admin.event.show', compact('event'));
-    }
-
+    // Form edit event
     public function edit($id)
     {
         $event = SriEvent::findOrFail($id);
@@ -65,6 +65,7 @@ class EventController extends Controller
         return view('admin.event.edit', compact('event', 'kategori'));
     }
 
+    // Update data event
     public function update(Request $request, $id)
     {
         $event = SriEvent::findOrFail($id);
@@ -73,10 +74,11 @@ class EventController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required',
             'tanggal' => 'required|date',
-            'lokasi' => 'required|string',
+            'lokasi' => 'required|string|max:255',
             'kategori_id' => 'required|exists:sri_kategori,id',
+            'kuota' => 'nullable|integer|min:1',
+            'penyelenggara' => 'required|string|max:255',
             'gambar' => 'nullable|image|max:2048',
-            'kuota' => 'nullable|integer|min:1', // Tambahkan validasi kuota
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -93,11 +95,21 @@ class EventController extends Controller
             'lokasi' => $request->lokasi,
             'kategori_id' => $request->kategori_id,
             'kuota' => $request->kuota,
+            'penyelenggara' => $request->penyelenggara,
+            'gambar' => $event->gambar,
         ]);
 
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil diperbarui.');
     }
 
+    // Detail event (opsional, jika diperlukan)
+    public function show($id)
+    {
+        $event = SriEvent::with('kategori')->findOrFail($id);
+        return view('admin.event.show', compact('event'));
+    }
+
+    // Hapus event
     public function destroy($id)
     {
         $event = SriEvent::findOrFail($id);

@@ -44,8 +44,7 @@
                             <!-- Tanggal -->
                             <div class="col-md-6">
                                 <label for="tanggal" class="form-label">Tanggal Event</label>
-                                <input id="tanggal" name="tanggal" type="date" class="form-control @error('tanggal') is-invalid @enderror"
-                                    value="{{ old('tanggal', optional($event->tanggal)->format('Y-m-d')) }}" required>
+                                <input id="tanggal" name="tanggal" type="date" class="form-control @error('tanggal') is-invalid @enderror" value="{{ old('tanggal', $event->tanggal_pelaksanaan->format('Y-m-d')) }}" required>
                                 @error('tanggal')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -54,44 +53,62 @@
                             <!-- Lokasi -->
                             <div class="col-md-6">
                                 <label for="lokasi" class="form-label">Lokasi Event</label>
-                                <input id="lokasi" name="lokasi" type="text" class="form-control @error('lokasi') is-invalid @enderror" value="{{ old('lokasi', $event->lokasi) }}" required>
+                                <input id="lokasi" name="lokasi" type="text" class="form-control @error('lokasi') is-invalid @enderror" value="{{ old('lokasi', $event->lokasi) }}">
                                 @error('lokasi')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
+                            <!-- Penyelenggara -->
+                            <div class="col-md-6">
+                                <label for="penyelenggara" class="form-label">Penyelenggara</label>
+                                <input id="penyelenggara" name="penyelenggara" type="text" class="form-control @error('penyelenggara') is-invalid @enderror" value="{{ old('penyelenggara', $event->penyelenggara) }}">
+                                @error('penyelenggara')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Kuota -->
+                            <div class="col-md-6">
+                                <label for="kuota" class="form-label">Kuota</label>
+                                <input id="kuota" name="kuota" type="number" class="form-control @error('kuota') is-invalid @enderror" value="{{ old('kuota', $event->kuota) }}">
+                                @error('kuota')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <!-- Gambar -->
-                            <div class="col-12">
-                                <label for="gambar" class="form-label">Gambar Event (Biarkan kosong jika tidak ingin mengubah)</label>
-                                <input id="gambar" name="gambar" type="file" accept="image/*" class="form-control @error('gambar') is-invalid @enderror">
+                            <div class="col-md-12">
+                                <label for="gambar" class="form-label">Gambar Event (biarkan kosong jika tidak diubah)</label>
+                                <input id="gambar" name="gambar" type="file" class="form-control @error('gambar') is-invalid @enderror" accept="image/*">
                                 @error('gambar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
 
                                 @if($event->gambar)
                                     <div class="mt-2">
-                                        <p class="small text-muted mb-1">Gambar saat ini:</p>
-                                        <img src="{{ asset('storage/' . $event->gambar) }}" alt="Gambar Event" class="img-thumbnail" style="max-width: 200px;">
+                                        <img src="{{ asset('storage/' . $event->gambar) }}" alt="gambar" width="200" class="rounded shadow">
                                     </div>
                                 @endif
                             </div>
 
                             <!-- Deskripsi -->
                             <div class="col-12">
-                                <label for="deskripsi" class="form-label">Deskripsi Event</label>
-                                <textarea id="deskripsi" name="deskripsi" rows="5" class="form-control @error('deskripsi') is-invalid @enderror" required>{{ old('deskripsi', $event->deskripsi) }}</textarea>
+                                <label for="deskripsi" class="form-label">Deskripsi</label>
+                                <textarea id="deskripsi" name="deskripsi" rows="5" class="form-control @error('deskripsi') is-invalid @enderror">{{ old('deskripsi', $event->deskripsi) }}</textarea>
                                 @error('deskripsi')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
 
+                        <!-- Tombol -->
                         <div class="mt-4 text-end">
                             <a href="{{ route('admin.event.index') }}" class="btn btn-secondary me-2">
                                 <i class="bi bi-arrow-left me-1"></i> Batal
                             </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle me-1"></i> Perbarui Event
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-save me-1"></i> Update Event
                             </button>
                         </div>
                     </form>

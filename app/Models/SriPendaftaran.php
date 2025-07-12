@@ -18,6 +18,10 @@ class SriPendaftaran extends Model
         'status',
         'kode_pendaftaran',
         'tanggal_daftar',
+        'nama',
+        'nim',
+        'jurusan',
+        'prodi',
     ];
 
     protected $casts = [
@@ -34,7 +38,7 @@ class SriPendaftaran extends Model
         return $this->belongsTo(SriEvent::class, 'event_id');
     }
 
-    public static function boot()
+    protected static function boot()
     {
         parent::boot();
         

@@ -71,6 +71,13 @@
     </div>
 </div>
 
+   <div class="text-center mt-3">
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="bi bi-arrow-left-circle me-1"></i> Dashboard
+        </a>
+    </div>
+</div>
+
 {{-- Modal Hapus --}}
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

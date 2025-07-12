@@ -14,11 +14,12 @@ class SriEvent extends Model
     protected $fillable = [
         'judul', // Diubah dari 'nama_event'
         'deskripsi',
-        'tanggal_pelaksanaan', 
+        'tanggal_pelaksanaan',
         'lokasi',
         'kuota',
         'gambar',
         'kategori_id',
+        'penyelenggara',
     ];
 
     protected $casts = [
@@ -41,5 +42,11 @@ class SriEvent extends Model
     public function pendaftarans()
     {
         return $this->hasMany(SriPendaftaran::class, 'event_id');
+    }
+
+    public function getSisaKuotaAttribute()
+    {
+        if (is_null($this->kuota)) return null;
+        return $this->kuota - $this->pendaftarans->count();
     }
 }
