@@ -36,70 +36,76 @@
 <!-- ISI KONTEN -->
 <div class="container py-5">
     @foreach (['success'=>'check','error'=>'x'] as $type => $icon)
-        @if (session($type))
-            <div class="alert alert-{{ $type }} alert-dismissible fade show" role="alert">
-                <i class="bi bi-{{ $icon }}-circle-fill me-2"></i>{{ session($type) }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+    @if (session($type))
+    <div class="alert alert-{{ $type }} alert-dismissible fade show" role="alert">
+        <i class="bi bi-{{ $icon }}-circle-fill me-2"></i>{{ session($type) }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
     @endforeach
 
     <!-- PENGUMUMAN -->
     <h2 class="text-center fw-bold mb-5 text-primary">Pengumuman PNP Terbaru</h2>
     <div class="row g-4 mb-5">
         @forelse ($pengumumans as $item)
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0 rounded-4 bg-light animate__animated animate__fadeInUp">
-                    <div class="card-body position-relative">
-                        <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">
-                            <i class="bi bi-megaphone"></i> Info
-                        </span>
-                        <h5 class="fw-bold text-primary mt-3">{{ $item->judul }}</h5>
-                        <small class="text-muted d-block mb-2">
-                            <i class="bi bi-calendar"></i> {{ $item->created_at->format('d M Y') }}
-                        </small>
-                        <p class="text-secondary mb-3">{{ Str::limit($item->isi, 100) }}</p>
-                        <button class="btn btn-link p-0 text-primary" data-bs-toggle="modal" data-bs-target="#announcementDetailModal" data-judul="{{ $item->judul }}" data-isi="{{ $item->isi }}" data-tanggal="{{ $item->created_at->format('d M Y') }}">
-                            Baca Selengkapnya <i class="bi bi-arrow-right"></i>
-                        </button>
-                    </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 rounded-4 bg-light animate__animated animate__fadeInUp">
+                <div class="card-body position-relative">
+                    <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">
+                        <i class="bi bi-megaphone"></i> Info
+                    </span>
+                    <h5 class="fw-bold text-primary mt-3">{{ $item->judul }}</h5>
+                    <small class="text-muted d-block mb-2">
+                        <i class="bi bi-calendar"></i> {{ $item->created_at->format('d M Y') }}
+                    </small>
+                    <p class="text-secondary mb-3">{{ Str::limit($item->isi, 100) }}</p>
+                    <button class="btn btn-link p-0 text-primary" data-bs-toggle="modal" data-bs-target="#announcementDetailModal" data-judul="{{ $item->judul }}" data-isi="{{ $item->isi }}" data-tanggal="{{ $item->created_at->format('d M Y') }}">
+                        Baca Selengkapnya <i class="bi bi-arrow-right"></i>
+                    </button>
                 </div>
             </div>
+        </div>
         @empty
-            <div class="col-12">
-                <div class="alert alert-info text-center">Belum ada pengumuman saat ini.</div>
-            </div>
+        <div class="col-12">
+            <div class="alert alert-info text-center">Belum ada pengumuman saat ini.</div>
+        </div>
         @endforelse
+
+        <div class="text-center mt-3">
+            <a href="{{ route('pengumuman.semua') }}" class="btn btn-outline-primary">Lihat Semua Pengumuman</a>
+        </div>
+
     </div>
+
 
     <!-- EVENT -->
     <h2 id="event-list" class="text-center fw-bold mb-5 text-primary">Event Kampus Terbaru</h2>
     <div class="row g-4">
         @forelse ($events as $item)
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0 rounded-4 animate__animated animate__fadeInUp">
-                    @if($item->gambar)
-                        <img src="{{ asset('storage/' . $item->gambar) }}" class="card-img-top rounded-top-4 img-fluid" alt="{{ $item->judul }}">
-                    @endif
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="fw-bold text-primary">{{ $item->judul }}</h5>
-                        <ul class="list-unstyled small text-muted mb-3">
-                            <li><i class="bi bi-calendar me-1 text-info"></i>{{ $item->tanggal->format('d M Y') }}</li>
-                            <li><i class="bi bi-geo-alt me-1 text-danger"></i>{{ $item->lokasi }}</li>
-                            <li><i class="bi bi-tag me-1 text-success"></i>{{ $item->kategori->nama_kategori }}</li>
-                            <li><i class="bi bi-person-circle me-1 text-primary"></i>{{ $item->penyelenggara ?? 'Tidak diketahui' }}</li>
-                        </ul>
-                        <p class="text-secondary flex-grow-1">{{ Str::limit($item->deskripsi, 80) }}</p>
-                        <a href="{{ route('event.detail', $item->id) }}" class="btn btn-outline-primary rounded-pill btn-sm mt-auto">
-                            Detail Event <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 rounded-4 animate__animated animate__fadeInUp">
+                @if($item->gambar)
+                <img src="{{ asset('storage/' . $item->gambar) }}" class="card-img-top rounded-top-4 img-fluid" alt="{{ $item->judul }}">
+                @endif
+                <div class="card-body d-flex flex-column">
+                    <h5 class="fw-bold text-primary">{{ $item->judul }}</h5>
+                    <ul class="list-unstyled small text-muted mb-3">
+                        <li><i class="bi bi-calendar me-1 text-info"></i>{{ $item->tanggal->format('d M Y') }}</li>
+                        <li><i class="bi bi-geo-alt me-1 text-danger"></i>{{ $item->lokasi }}</li>
+                        <li><i class="bi bi-tag me-1 text-success"></i>{{ $item->kategori->nama_kategori }}</li>
+                        <li><i class="bi bi-person-circle me-1 text-primary"></i>{{ $item->penyelenggara ?? 'Tidak diketahui' }}</li>
+                    </ul>
+                    <p class="text-secondary flex-grow-1">{{ Str::limit($item->deskripsi, 80) }}</p>
+                    <a href="{{ route('event.detail', $item->id) }}" class="btn btn-outline-primary rounded-pill btn-sm mt-auto">
+                        Detail Event <i class="bi bi-arrow-right"></i>
+                    </a>
                 </div>
             </div>
+        </div>
         @empty
-            <div class="col-12">
-                <div class="alert alert-info text-center">Belum ada event kampus saat ini.</div>
-            </div>
+        <div class="col-12">
+            <div class="alert alert-info text-center">Belum ada event kampus saat ini.</div>
+        </div>
         @endforelse
     </div>
 
@@ -166,15 +172,15 @@
 </div>
 
 <script>
-document.addEventListener('show.bs.modal', function (e) {
-    const btn = e.relatedTarget;
-    if (!btn) return;
-    document.getElementById('modalAnnouncementJudul').textContent = btn.dataset.judul;
-    document.getElementById('modalAnnouncementIsi').textContent = btn.dataset.isi;
-    document.getElementById('modalAnnouncementTanggal').textContent = btn.dataset.tanggal;
-});
+    document.addEventListener('show.bs.modal', function(e) {
+        const btn = e.relatedTarget;
+        if (!btn) return;
+        document.getElementById('modalAnnouncementJudul').textContent = btn.dataset.judul;
+        document.getElementById('modalAnnouncementIsi').textContent = btn.dataset.isi;
+        document.getElementById('modalAnnouncementTanggal').textContent = btn.dataset.tanggal;
+    });
 </script>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
 
 @endsection

@@ -10,22 +10,25 @@ use App\Http\Controllers\Admin\PengumumanController;
 use App\Http\Controllers\Admin\PendaftaranController;
 use App\Http\Middleware\RoleAdmin;
 
-// Beranda
 Route::get('/', [FrontController::class, 'rootRedirect'])->name('home');
 Route::get('/beranda', [FrontController::class, 'index'])->name('beranda');
 
-// Event Lengkap (per kategori)
 Route::get('/event/semua', [FrontController::class, 'eventSemua'])->name('event.semua');
 
-// Detail Event & Pendaftaran
+
 Route::get('/event/{id}', [FrontController::class, 'eventDetail'])->name('event.detail');
-Route::get('/event/{id}/daftar', [FrontController::class, 'formDaftar'])->middleware('auth')->name('event.form.daftar');
+ Route::get('/event/{id}/daftar', [FrontController::class, 'formDaftar'])->name('event.form.daftar');
 Route::post('/daftar', [FrontController::class, 'daftar'])->middleware('auth')->name('event.daftar');
 
-// Agenda
+
 Route::get('/agenda', [FrontController::class, 'agenda'])->name('agenda');
 
-// Autentikasi
+
+Route::get('/pengumuman', [FrontController::class, 'pengumumanSemua'])->name('pengumuman.semua');
+Route::get('/pengumuman/{id}', [FrontController::class, 'pengumumanDetail'])->name('pengumuman.detail');
+Route::get('/pengumuman/suggest', [FrontController::class, 'suggestPengumuman'])->name('pengumuman.suggest');
+
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -36,7 +39,7 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// Panel Admin
+
 Route::prefix('admin')->name('admin.')->middleware(['auth', RoleAdmin::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/data/statistik', [DashboardController::class, 'getStats'])->name('dashboard.stats');

@@ -23,31 +23,65 @@ class FrontController extends Controller
 
     public function index()
     {
-        // Hanya ambil 6 event terbaru
         $events = SriEvent::latest()->take(6)->get();
-        $pengumumans = SriPengumuman::latest()->get();
+        $pengumumans = SriPengumuman::latest()->take(6)->get(); // hanya ambil 6 pengumuman terbaru
+
         return view('front.beranda', compact('events', 'pengumumans'));
     }
 
     public function eventSemua(Request $request)
-{
-    $kategoriList = SriKategori::all();
-    $kategoriId = $request->query('kategori');
+    {
+        $kategoriList = SriKategori::all();
+        $kategoriId = $request->query('kategori');
 
-    $query = SriEvent::with('kategori')->latest();
+        $query = SriEvent::with('kategori')->latest();
 
-    if ($kategoriId) {
-        $query->where('kategori_id', $kategoriId);
+        if ($kategoriId) {
+            $query->where('kategori_id', $kategoriId);
+        }
+
+        $events = $query->paginate(6)->withQueryString();
+
+        return view('front.event_semua', [
+            'events' => $events,
+            'kategoriList' => $kategoriList,
+            'kategoriId' => $kategoriId,
+        ]);
     }
 
-    $events = $query->paginate(6)->withQueryString(); // pakai paginate
+    public function pengumumanSemua(Request $request)
+    {
+        $search = $request->query('search');
+        $query = SriPengumuman::query();
 
-    return view('front.event_semua', [
-        'events' => $events,
-        'kategoriList' => $kategoriList,
-        'kategoriId' => $kategoriId,
-    ]);
-}
+        if ($search) {
+            $query->where('judul', 'like', '%' . $search . '%');
+        }
+
+        $pengumumans = $query->orderBy('created_at', 'desc')->paginate(6)->withQueryString();
+
+        return view('front.pengumuman_semua', compact('pengumumans', 'search'));
+    }
+
+
+
+    public function pengumumanDetail($id)
+    {
+        $pengumuman = SriPengumuman::findOrFail($id);
+        return view('front.pengumuman_detail', compact('pengumuman'));
+    }
+
+    public function suggestPengumuman(Request $request)
+    {
+        $query = $request->get('query');
+
+        $results = SriPengumuman::where('judul', 'like', '%' . $query . '%')
+            ->limit(5)
+            ->get(['id', 'judul']);
+
+        return response()->json($results);
+    }
+
 
 
 
@@ -60,7 +94,9 @@ class FrontController extends Controller
     public function formDaftar($id)
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu untuk mendaftar event.');
+            // Simpan intended URL ke session
+            session(['url.intended' => route('event.form.daftar', $id)]);
+            return redirect()->route('login')->with('error', 'Silakan login untuk mendaftar.');
         }
 
         $event = SriEvent::findOrFail($id);
@@ -74,6 +110,8 @@ class FrontController extends Controller
 
         return view('front.form_daftar', compact('event'));
     }
+
+
 
     public function daftar(Request $request)
     {
@@ -92,23 +130,19 @@ class FrontController extends Controller
         $user = Auth::user();
         $event = SriEvent::with('pendaftarans')->findOrFail($request->event_id);
 
-        // Cek apakah user sudah mendaftar
         if ($event->pendaftarans->where('user_id', $user->id)->count()) {
             return redirect()->route('event.detail', $event->id)->with('error', 'Anda sudah terdaftar untuk event ini.');
         }
 
-        // Cek kuota
         if (!is_null($event->kuota) && $event->pendaftarans->count() >= $event->kuota) {
             return redirect()->route('event.detail', $event->id)->with('error', 'Maaf, kuota pendaftaran sudah penuh.');
         }
 
-        // Buat kode pendaftaran unik
         $kodePendaftaran = 'REG-' . strtoupper(Str::random(8));
         while (SriPendaftaran::where('kode_pendaftaran', $kodePendaftaran)->exists()) {
             $kodePendaftaran = 'REG-' . strtoupper(Str::random(8));
         }
 
-        // Simpan data pendaftaran
         SriPendaftaran::create([
             'user_id' => $user->id,
             'event_id' => $event->id,
