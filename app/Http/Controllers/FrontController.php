@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\SriEvent;
 use App\Models\SriKategori;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Models\SriPengumuman;
 use App\Models\SriPendaftaran;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class FrontController extends Controller
 {
@@ -24,7 +24,7 @@ class FrontController extends Controller
     public function index()
     {
         $events = SriEvent::latest()->take(6)->get();
-        $pengumumans = SriPengumuman::latest()->take(6)->get(); // hanya ambil 6 pengumuman terbaru
+        $pengumumans = SriPengumuman::latest()->take(6)->get();
 
         return view('front.beranda', compact('events', 'pengumumans'));
     }
@@ -58,12 +58,10 @@ class FrontController extends Controller
             $query->where('judul', 'like', '%' . $search . '%');
         }
 
-        $pengumumans = $query->orderBy('created_at', 'desc')->paginate(6)->withQueryString();
+        $pengumumans = $query->latest()->paginate(6)->withQueryString();
 
         return view('front.pengumuman_semua', compact('pengumumans', 'search'));
     }
-
-
 
     public function pengumumanDetail($id)
     {
@@ -82,9 +80,6 @@ class FrontController extends Controller
         return response()->json($results);
     }
 
-
-
-
     public function eventDetail($id)
     {
         $event = SriEvent::with('kategori', 'pendaftarans')->findOrFail($id);
@@ -94,14 +89,12 @@ class FrontController extends Controller
     public function formDaftar($id)
     {
         if (!Auth::check()) {
-            // Simpan intended URL ke session
             session(['url.intended' => route('event.form.daftar', $id)]);
             return redirect()->route('login')->with('error', 'Silakan login untuk mendaftar.');
         }
 
         $event = SriEvent::findOrFail($id);
 
-        // Cek apakah user sudah mendaftar
         $sudahDaftar = $event->pendaftarans()->where('user_id', Auth::id())->exists();
 
         if ($sudahDaftar) {
@@ -110,7 +103,6 @@ class FrontController extends Controller
 
         return view('front.form_daftar', compact('event'));
     }
-
 
     public function daftar(Request $request)
     {
@@ -158,9 +150,10 @@ class FrontController extends Controller
 
     public function eventSaya()
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
-        $eventSaya = $user->pendaftarans()->with('event')->latest('tanggal_daftar')->get();
 
+        $eventSaya = $user->pendaftarans()->with('event')->latest('tanggal_daftar')->get();
 
         return view('front.event_saya', compact('eventSaya'));
     }

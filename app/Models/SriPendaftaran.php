@@ -35,16 +35,10 @@ class SriPendaftaran extends Model
         return $this->belongsTo(User::class);
     }
 
-    // public function event()
-    // {
-    //     return $this->belongsTo(SriEvent::class, 'event_id');
-    // }
-
     public function event()
     {
-        return $this->belongsTo(\App\Models\SriEvent::class);
+        return $this->belongsTo(SriEvent::class);
     }
-
 
     protected static function boot()
     {

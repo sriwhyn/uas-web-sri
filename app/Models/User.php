@@ -39,13 +39,13 @@ class User extends Authenticatable
 
     public function pendaftarans(): HasMany
     {
-        return $this->hasMany(\App\Models\SriPendaftaran::class, 'user_id');
+        return $this->hasMany(SriPendaftaran::class, 'user_id');
     }
 
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(SriEvent::class, 'sri_pendaftaran', 'user_id', 'event_id')
-            ->withPivot('status_pendaftaran', 'created_at')
-            ->withTimestamps();
+                    ->withPivot('status_pendaftaran', 'created_at')
+                    ->withTimestamps();
     }
 }
