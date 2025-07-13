@@ -112,49 +112,48 @@ class FrontController extends Controller
     }
 
 
-
-    public function daftar(Request $request)
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Anda harus login untuk mendaftar event.');
-        }
-
-        $request->validate([
-            'event_id' => 'required|exists:sri_event,id',
-            'nama' => 'required|string|max:100',
-            'nim' => 'required|string|max:20',
-            'jurusan' => 'required|string|max:100',
-            'prodi' => 'required|string|max:100',
-        ]);
-
-        $user = Auth::user();
-        $event = SriEvent::with('pendaftarans')->findOrFail($request->event_id);
-
-        if ($event->pendaftarans->where('user_id', $user->id)->count()) {
-            return redirect()->route('event.detail', $event->id)->with('error', 'Anda sudah terdaftar untuk event ini.');
-        }
-
-        if (!is_null($event->kuota) && $event->pendaftarans->count() >= $event->kuota) {
-            return redirect()->route('event.detail', $event->id)->with('error', 'Maaf, kuota pendaftaran sudah penuh.');
-        }
-
-        $kodePendaftaran = 'REG-' . strtoupper(Str::random(8));
-        while (SriPendaftaran::where('kode_pendaftaran', $kodePendaftaran)->exists()) {
-            $kodePendaftaran = 'REG-' . strtoupper(Str::random(8));
-        }
-
-        SriPendaftaran::create([
-            'user_id' => $user->id,
-            'event_id' => $event->id,
-            'nama' => $request->nama,
-            'nim' => $request->nim,
-            'jurusan' => $request->jurusan,
-            'prodi' => $request->prodi,
-            'status' => 'disetujui',
-            'kode_pendaftaran' => $kodePendaftaran,
-            'tanggal_daftar' => now(),
-        ]);
-
-        return redirect()->route('event.detail', $event->id)->with('success', 'Pendaftaran berhasil!');
+public function daftar(Request $request)
+{
+    if (!Auth::check()) {
+        return redirect()->route('login')->with('error', 'Anda harus login untuk mendaftar event.');
     }
+
+    $request->validate([
+        'event_id' => 'required|exists:sri_event,id',
+        'nama' => 'required|string|max:100',
+        'status_pendaftaran' => 'required|in:mahasiswa,umum',
+        'nim' => 'nullable|string|max:20',
+        'jurusan' => 'nullable|string|max:100',
+        'prodi' => 'nullable|string|max:100',
+        'institusi' => 'nullable|string|max:255',
+    ]);
+
+    $user = Auth::user();
+    $event = SriEvent::with('pendaftarans')->findOrFail($request->event_id);
+
+    if ($event->pendaftarans->where('user_id', $user->id)->count()) {
+        return redirect()->route('event.detail', $event->id)->with('error', 'Anda sudah terdaftar untuk event ini.');
+    }
+
+    if (!is_null($event->kuota) && $event->pendaftarans->count() >= $event->kuota) {
+        return redirect()->route('event.detail', $event->id)->with('error', 'Maaf, kuota pendaftaran sudah penuh.');
+    }
+
+    SriPendaftaran::create([
+        'user_id' => $user->id,
+        'event_id' => $event->id,
+        'nama' => $request->nama,
+        'nim' => $request->nim,
+        'jurusan' => $request->jurusan,
+        'prodi' => $request->prodi,
+        'institusi' => $request->institusi,
+        'status' => 'terdaftar',
+        'status_pendaftaran' => $request->status_pendaftaran,
+        'kode_pendaftaran' => 'REG-' . strtoupper(Str::random(8)),
+        'tanggal_daftar' => now(),
+    ]);
+
+    return redirect()->route('event.detail', $event->id)->with('success', 'Pendaftaran berhasil!');
+}
+
 }

@@ -5,17 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SriPendaftaran;
-use App\Models\User;
-use App\Models\SriEvent;
 
 class PendaftaranController extends Controller
 {
     /**
-     * Menampilkan daftar semua pendaftaran.
+     * Menampilkan daftar semua pendaftaran dengan filter status_pendaftaran.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pendaftaran = SriPendaftaran::with(['user', 'event'])->latest()->get();
+        $query = SriPendaftaran::with(['user', 'event'])->latest();
+
+        // Filter berdasarkan status_pendaftaran (mahasiswa / umum)
+        if ($request->filled('status_peserta')) {
+            $query->where('status_pendaftaran', $request->status_peserta);
+        }
+
+        $pendaftaran = $query->get();
+
         return view('admin.pendaftaran.index', compact('pendaftaran'));
     }
 
@@ -26,26 +32,6 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = SriPendaftaran::with(['user', 'event'])->findOrFail($id);
         return view('admin.pendaftaran.show', compact('pendaftaran'));
-    }
-
-    /**
-     * Memperbarui status dari pendaftaran.
-     */
-    public function update(Request $request, $id)
-    {
-        $pendaftaran = SriPendaftaran::findOrFail($id);
-
-        $request->validate([
-            'status' => 'required|in:menunggu,disetujui,ditolak',
-        ]);
-
-        $pendaftaran->update([
-            'status' => $request->status,
-        ]);
-
-        return redirect()
-            ->route('admin.pendaftaran.show', $pendaftaran->id)
-            ->with('success', 'Status pendaftaran berhasil diperbarui.');
     }
 
     /**

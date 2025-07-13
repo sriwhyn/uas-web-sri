@@ -1,7 +1,7 @@
 @extends('layouts.front')
 
 @section('content')
-<div class="container mt-5">
+<div class="container py-5">
     <h2 class="text-center text-primary mb-4">📢 Semua Pengumuman</h2>
 
     {{-- Form Pencarian --}}
@@ -17,28 +17,31 @@
     </form>
 
     {{-- Daftar Pengumuman --}}
-    <div class="row row-cols-1 row-cols-md-2 g-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @forelse ($pengumumans as $pengumuman)
         <div class="col">
-            <div class="card shadow-sm h-100 border-0">
-                <div class="card-body">
+            <div class="card shadow-sm h-100 border-0" style="background-color: #f4faff;">
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title text-primary">
                         <a href="{{ route('pengumuman.detail', $pengumuman->id) }}" class="text-decoration-none">
                             {{ $pengumuman->judul }}
                         </a>
                     </h5>
                     <p class="card-text small text-muted">
-                        Diumumkan: {{ \Carbon\Carbon::parse($pengumuman->created_at)->translatedFormat('d F Y') }}
+                        <i class="bi bi-calendar me-1"></i>
+                        {{ \Carbon\Carbon::parse($pengumuman->created_at)->translatedFormat('d F Y') }}
                     </p>
-                    <p class="card-text">
+                    <p class="card-text text-secondary flex-grow-1">
                         {{ Str::limit(strip_tags($pengumuman->isi), 120, '...') }}
                     </p>
-                    <a href="{{ route('pengumuman.detail', $pengumuman->id) }}" class="btn btn-sm btn-outline-primary">Lihat Selengkapnya</a>
+                    <a href="{{ route('pengumuman.detail', $pengumuman->id) }}" class="btn btn-sm rounded-pill mt-auto text-white" style="background-color: #4da3ff;">
+                        <i class="bi bi-book me-1"></i> Lihat Selengkapnya
+                    </a>
                 </div>
             </div>
         </div>
         @empty
-        <div class="col">
+        <div class="col-12">
             <div class="alert alert-info text-center">Belum ada pengumuman.</div>
         </div>
         @endforelse
@@ -46,7 +49,7 @@
 
     {{-- Pagination --}}
     <div class="d-flex justify-content-center mt-4">
-        {{ $pengumumans->links() }}
+        {{ $pengumumans->withQueryString()->links('pagination::bootstrap-5') }}
     </div>
 </div>
 @endsection

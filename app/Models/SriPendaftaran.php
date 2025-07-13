@@ -22,6 +22,8 @@ class SriPendaftaran extends Model
         'nim',
         'jurusan',
         'prodi',
+        'institusi',
+        'status_pendaftaran'
     ];
 
     protected $casts = [

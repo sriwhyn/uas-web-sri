@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\SriKategori;
+use App\Models\SriKategori; // Pastikan model SriKategori diimpor
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator; // Import Validator facade
 
 class KategoriController extends Controller
 {
@@ -18,9 +18,6 @@ class KategoriController extends Controller
         return view('admin.kategori.index', compact('kategoris'));
     }
 
-    /**
-     * Simpan kategori baru.
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -38,20 +35,15 @@ class KategoriController extends Controller
             'nama_kategori' => $request->nama_kategori,
         ]);
 
-        // Set zona waktu Asia/Jakarta untuk respons AJAX
         if ($request->ajax()) {
-            $kategori->created_at = $kategori->created_at->timezone('Asia/Jakarta')->toDateTimeString();
-            return response()->json([
-                'success' => 'Kategori berhasil ditambahkan!',
-                'kategori' => $kategori
-            ]);
+            return response()->json(['success' => 'Kategori berhasil ditambahkan!', 'kategori' => $kategori]);
         }
 
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil ditambahkan!');
     }
 
     /**
-     * Tampilkan form edit.
+     * Tampilkan form untuk mengedit kategori.
      */
     public function edit(SriKategori $kategori)
     {
@@ -59,7 +51,7 @@ class KategoriController extends Controller
     }
 
     /**
-     * Perbarui kategori.
+     * Perbarui kategori di database.
      */
     public function update(Request $request, SriKategori $kategori)
     {
@@ -79,23 +71,17 @@ class KategoriController extends Controller
         ]);
 
         if ($request->ajax()) {
-            return response()->json([
-                'success' => 'Kategori berhasil diperbarui!',
-                'kategori' => $kategori
-            ]);
+            return response()->json(['success' => 'Kategori berhasil diperbarui!', 'kategori' => $kategori]);
         }
 
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diperbarui!');
     }
 
-    /**
-     * Hapus kategori.
-     */
     public function destroy(SriKategori $kategori)
     {
         $kategori->delete();
 
-        if (request()->ajax()) {
+        if (request()->ajax()) { // Menggunakan request() helper untuk memeriksa AJAX
             return response()->json(['success' => 'Kategori berhasil dihapus!']);
         }
 
