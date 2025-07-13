@@ -27,6 +27,8 @@ Route::get('/agenda', [FrontController::class, 'agenda'])->name('agenda');
 Route::get('/pengumuman', [FrontController::class, 'pengumumanSemua'])->name('pengumuman.semua');
 Route::get('/pengumuman/{id}', [FrontController::class, 'pengumumanDetail'])->name('pengumuman.detail');
 Route::get('/pengumuman/suggest', [FrontController::class, 'suggestPengumuman'])->name('pengumuman.suggest');
+Route::get('/event-saya', [App\Http\Controllers\FrontController::class, 'eventSaya'])->name('event.saya')->middleware('auth');
+
 
 
 Route::middleware('guest')->group(function () {

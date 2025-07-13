@@ -11,7 +11,7 @@ class SriPendaftaran extends Model
     use HasFactory;
 
     protected $table = 'sri_pendaftaran';
-    
+
     protected $fillable = [
         'user_id',
         'event_id',
@@ -35,15 +35,21 @@ class SriPendaftaran extends Model
         return $this->belongsTo(User::class);
     }
 
+    // public function event()
+    // {
+    //     return $this->belongsTo(SriEvent::class, 'event_id');
+    // }
+
     public function event()
     {
-        return $this->belongsTo(SriEvent::class, 'event_id');
+        return $this->belongsTo(\App\Models\SriEvent::class);
     }
+
 
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->kode_pendaftaran)) {
                 $model->kode_pendaftaran = 'REG-' . strtoupper(Str::random(8));
