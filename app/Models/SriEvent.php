@@ -9,10 +9,10 @@ class SriEvent extends Model
 {
     use HasFactory;
 
-    protected $table = 'sri_event'; // Nama tabel tunggal
+    protected $table = 'sri_event'; 
 
     protected $fillable = [
-        'judul', // Diubah dari 'nama_event'
+        'judul', 
         'deskripsi',
         'tanggal_pelaksanaan',
         'lokasi',
@@ -28,7 +28,7 @@ class SriEvent extends Model
         'waktu_selesai' => 'datetime',
     ];
 
-    // Accessor untuk tanggal (maps ke tanggal_pelaksanaan)
+    
     public function getTanggalAttribute()
     {
         return $this->tanggal_pelaksanaan;

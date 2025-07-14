@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +23,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar -->
@@ -41,6 +43,9 @@
                             <i class="bi bi-house-door me-1"></i> Beranda
                         </a>
                     </li>
+
+                    {{-- Tampilkan menu ini hanya setelah login --}}
+                    @auth
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('event.semua') ? 'active' : '' }}" href="{{ route('event.semua') }}">
                             <i class="bi bi-calendar-event me-1"></i> Event
@@ -51,8 +56,6 @@
                             <i class="bi bi-megaphone-fill me-1"></i> Pengumuman
                         </a>
                     </li>
-
-                    @auth
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('event.saya') ? 'active' : '' }}" href="{{ route('event.saya') }}">
                             <i class="bi bi-check-circle me-1"></i> Event Saya
@@ -60,6 +63,7 @@
                     </li>
                     @endauth
 
+                    {{-- Jika login --}}
                     @auth
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
@@ -69,9 +73,11 @@
                             <li class="dropdown-item-text text-muted small">{{ Auth::user()->email }}</li>
                             @if(Auth::user()->role === 'admin')
                             <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                <i class="bi bi-speedometer2 me-1"></i> Admin Panel</a></li>
+                                    <i class="bi bi-speedometer2 me-1"></i> Admin Panel</a></li>
                             @endif
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
@@ -83,6 +89,7 @@
                         </ul>
                     </li>
                     @else
+                    {{-- Jika belum login --}}
                     <li class="nav-item">
                         <a class="btn btn-outline-primary rounded-pill px-3 py-1" href="{{ route('login') }}">
                             <i class="bi bi-box-arrow-in-right me-1"></i> Login
@@ -132,7 +139,7 @@
         <div class="pt-3 mt-4 border-top border-white">
             <small class="text-white-50">
                 &copy; {{ date('Y') }} <span class="fw-semibold text-white">Pusat Informasi Kampus PNP</span>.
-                Dibuat oleh <span class="fw-semibold text-white">Sri Wahyuni</span>.
+            <span class="fw-semibold text-white">Sri Wahyuni</span>
             </small>
         </div>
     </footer>
@@ -140,4 +147,5 @@
     <!-- Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

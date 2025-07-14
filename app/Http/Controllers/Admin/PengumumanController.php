@@ -8,20 +8,18 @@ use App\Models\SriPengumuman;
 
 class PengumumanController extends Controller
 {
-    // Tampilkan semua pengumuman
+   
     public function index()
     {
         $pengumuman = SriPengumuman::latest()->get();
         return view('admin.pengumuman.index', compact('pengumuman'));
     }
 
-    // Tampilkan form tambah pengumuman
     public function create()
     {
         return view('admin.pengumuman.create');
     }
 
-    // Simpan data pengumuman baru
     public function store(Request $request)
     {
         $request->validate([
@@ -34,14 +32,14 @@ class PengumumanController extends Controller
         return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil ditambahkan.');
     }
 
-    // Tampilkan form edit pengumuman
+
     public function edit($id)
     {
         $pengumuman = SriPengumuman::findOrFail($id);
         return view('admin.pengumuman.edit', compact('pengumuman'));
     }
 
-    // Update data pengumuman
+    
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -55,7 +53,7 @@ class PengumumanController extends Controller
         return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil diperbarui.');
     }
 
-    // Hapus data pengumuman
+    
     public function destroy($id)
     {
         $pengumuman = SriPengumuman::findOrFail($id);

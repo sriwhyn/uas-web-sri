@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\SriKategori; // Pastikan model SriKategori diimpor
+use App\Models\SriKategori; 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator; // Import Validator facade
+use Illuminate\Support\Facades\Validator; 
 
 class KategoriController extends Controller
 {
-    /**
-     * Tampilkan daftar kategori.
-     */
+    
     public function index()
     {
         $kategoris = SriKategori::all();
@@ -42,17 +40,13 @@ class KategoriController extends Controller
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil ditambahkan!');
     }
 
-    /**
-     * Tampilkan form untuk mengedit kategori.
-     */
+    
     public function edit(SriKategori $kategori)
     {
         return view('admin.kategori.edit', compact('kategori'));
     }
 
-    /**
-     * Perbarui kategori di database.
-     */
+   
     public function update(Request $request, SriKategori $kategori)
     {
         $validator = Validator::make($request->all(), [
@@ -81,7 +75,7 @@ class KategoriController extends Controller
     {
         $kategori->delete();
 
-        if (request()->ajax()) { // Menggunakan request() helper untuk memeriksa AJAX
+        if (request()->ajax()) {
             return response()->json(['success' => 'Kategori berhasil dihapus!']);
         }
 

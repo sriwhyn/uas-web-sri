@@ -10,21 +10,21 @@ use App\Models\SriKategori;
 
 class EventController extends Controller
 {
-    // Tampilkan daftar event
+    
     public function index()
     {
         $events = SriEvent::with('kategori')->latest()->get();
         return view('admin.event.index', compact('events'));
     }
 
-    // Form tambah event
+    
     public function create()
     {
         $kategori = SriKategori::all();
         return view('admin.event.create', compact('kategori'));
     }
 
-    // Simpan event baru
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -57,7 +57,6 @@ class EventController extends Controller
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan.');
     }
 
-    // Form edit event
     public function edit($id)
     {
         $event = SriEvent::findOrFail($id);
@@ -65,7 +64,7 @@ class EventController extends Controller
         return view('admin.event.edit', compact('event', 'kategori'));
     }
 
-    // Update data event
+   
     public function update(Request $request, $id)
     {
         $event = SriEvent::findOrFail($id);
@@ -102,14 +101,14 @@ class EventController extends Controller
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil diperbarui.');
     }
 
-    // Detail event (opsional, jika diperlukan)
+   
     public function show($id)
     {
         $event = SriEvent::with('kategori')->findOrFail($id);
         return view('admin.event.show', compact('event'));
     }
 
-    // Hapus event
+    
     public function destroy($id)
     {
         $event = SriEvent::findOrFail($id);

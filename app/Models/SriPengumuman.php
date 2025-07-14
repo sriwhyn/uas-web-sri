@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Builder; // Import Builder untuk scope
+use Illuminate\Database\Eloquent\Builder; 
 
 class SriPengumuman extends Model
 {
@@ -17,9 +17,7 @@ class SriPengumuman extends Model
         'isi',
     ];
 
-    /**
-     * Scope: Hanya pengumuman yang aktif (is_aktif = true).
-     */
+    
     public function scopeAktif(Builder $query): void
     {
         $query->where('is_aktif', true);

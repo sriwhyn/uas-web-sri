@@ -10,17 +10,13 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    /**
-     * Tampilkan form login.
-     */
+  
     public function loginForm()
     {
         return view('auth.login');
     }
 
-    /**
-     * Proses login manual.
-     */
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -31,7 +27,6 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Langsung redirect ke intended tanpa fallback
             return redirect()->intended();
         }
 
@@ -40,11 +35,6 @@ class AuthController extends Controller
         ]);
     }
 
-
-
-    /**
-     * Logout user.
-     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -55,17 +45,12 @@ class AuthController extends Controller
         return redirect('/');
     }
 
-    /**
-     * Tampilkan form registrasi.
-     */
+
     public function registerForm()
     {
         return view('auth.register');
     }
 
-    /**
-     * Proses registrasi user baru.
-     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -82,10 +67,10 @@ class AuthController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role'     => 'mahasiswa', // default role
+            'role'     => 'mahasiswa', 
         ]);
 
-        Auth::login($user); // login otomatis setelah register
+        Auth::login($user); 
         $request->session()->regenerate();
 
         return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan login.');

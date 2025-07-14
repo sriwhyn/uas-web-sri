@@ -9,7 +9,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // panjang 20 karakter, atau enum jika suka
             $table->enum('role', ['admin', 'mahasiswa'])
                   ->default('mahasiswa')
                   ->after('password');

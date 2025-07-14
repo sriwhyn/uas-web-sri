@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Admin tetap manual
+        
         User::create([
             'name'     => 'Admin Sistem',
             'email'    => 'admin@example.com',
@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
             'role'     => 'admin',
         ]);
 
-        // 10 Mahasiswa acak
         User::factory()->count(10)->create();
     }
 }

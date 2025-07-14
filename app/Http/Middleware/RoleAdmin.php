@@ -16,12 +16,12 @@ class RoleAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Periksa apakah pengguna sudah login dan memiliki 'role' 'admin'
-        if (Auth::check() && Auth::user()->role === 'admin') { // Mengubah 'level_pengguna' menjadi 'role'
+       
+        if (Auth::check() && Auth::user()->role === 'admin') { 
             return $next($request);
         }
 
-        // Jika tidak memenuhi syarat (tidak login atau bukan admin), tampilkan error 403
+       
         abort(403, 'Akses dibatasi hanya untuk admin.');
     }
 }

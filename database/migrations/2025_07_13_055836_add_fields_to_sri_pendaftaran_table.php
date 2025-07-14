@@ -12,9 +12,8 @@ return new class extends Migration {
             $table->string('jurusan')->nullable()->after('nim');
             $table->string('prodi')->nullable()->after('jurusan');
             $table->string('institusi')->nullable()->after('prodi');
-            $table->string('status_pendaftaran')->default('mahasiswa')->after('institusi'); // mahasiswa / umum
-
-            // Jika kolom `status` belum ada, baru ditambahkan
+            $table->string('status_pendaftaran')->default('mahasiswa')->after('institusi'); 
+            
             if (!Schema::hasColumn('sri_pendaftaran', 'status')) {
                 $table->string('status')->default('terdaftar')->after('status_pendaftaran');
             }
